@@ -1,6 +1,7 @@
 #pragma once
 #include "vector"
 
+//base class for all tiles
 class Tile
 {
 public:
@@ -10,7 +11,7 @@ public:
 	char symbol;
 };
 
-//tile with an update func
+//tile with an update func, basically one that does something every tick
 class ActiveTile : public Tile
 {
 public:
@@ -21,3 +22,7 @@ protected:
 	static std::vector<ActiveTile> allActives;
 };
 
+class Tile_Rock : Tile
+{
+
+};
