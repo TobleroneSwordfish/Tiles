@@ -18,7 +18,7 @@
     <ClInclude Include="Tiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Grid.h">
+    <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -26,7 +26,7 @@
     <ClCompile Include="Tiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
+    <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

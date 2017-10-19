@@ -1,12 +1,18 @@
 #include "Tiles.h"
+
 class Tile
 {
 public:
-	int x, y;
-	char symbol;
+	const static enum tileIDs { Rock, Wood };
+	~Tile()
+	{
+
+	}
+protected:
+	std::vector<TileEffect> effects;
 };
 
-class ActiveTile
+class ActiveTile : public Tile
 {
 public:
 	ActiveTile()
@@ -17,11 +23,23 @@ protected:
 	static std::vector<ActiveTile> allActives;
 };
 
-class Rock : Tile
+class TileEffect
+{
+	const static enum effectIDs { Burning, Plant };
+	int ID;
+	void Update();
+};
+
+
+class Tile_Rock : public Tile
 {
 public:
-	Rock()
+	const static int ID = tileIDs::Rock;
+	const static char symbol = '#';
+	Tile_Rock()
 	{
-		symbol = '#';
+
 	}
 };
+
+//tile effect classes
