@@ -45,7 +45,7 @@ class Tile_Null : public Tile
 class Tile_Rock : public Tile
 {
 	const static TileID ID = Rock;
-	const static char symbol = '#';
+	const static char symbol = 'R';
 public:
 	Tile_Rock();
 	~Tile_Rock();

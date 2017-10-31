@@ -2,6 +2,7 @@
 int main()
 {
 	World bob;
-	bob.SetTile(2, 2, new Tile_Rock);
+	Tile_Rock *rock;
+	bob.SetTile(2, 2, rock);
 	bob.Render();
 }
