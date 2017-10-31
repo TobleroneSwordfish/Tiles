@@ -3,11 +3,14 @@
 #include <iostream>
 	World::World()
 	{
+		std::cout << "Intializing world" << std::endl;
 		for (int x = 0; x <= xLimit; x++)
 		{
 			for (int y = 0; y <= yLimit; y++)
 			{
-				grid[x][y] = new Tile_Null();
+				Tile_Null *newTile;
+				newTile = new Tile_Null();
+				grid[x][y] = newTile;
 			}
 		}
 	}
@@ -31,27 +34,27 @@
 			{
 				std::cout << "+---";
 			}
-			std::cout << "+\n";
+			std::cout << "+" << std::endl;
 			for (int x = 0; x < xLimit; x++)
 			{
 				std::cout << "|   ";
 			}
-			std::cout << "|\n";
+			std::cout << "|" << std::endl;
 			for (int x = 0; x < xLimit; x++)
 			{
 				std::cout << "| " << GetTile(x, y)->symbol << " ";
 				//printf("%c[1;32m%c", 27, GetTile(x, y)->symbol); // green
 			}
-			std::cout << "|\n";
+			std::cout << "|" << std::endl;
 			for (int x = 0; x < xLimit; x++)
 			{
 				std::cout << "|   ";
 			}
-			std::cout << "|\n";
+			std::cout << "|" << std::endl;
 		}
 		for (int x = 0; x < xLimit; x++)
 		{
 			std::cout << "+---";
 		}
-		std::cout << "+\n";
+		std::cout << "+" << std::endl;
 	}
