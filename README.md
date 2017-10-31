@@ -26,4 +26,8 @@ YEAH
 
 FUCK THAT TOO
 
+<<<<<<< HEAD
 sleep.
+=======
+sleep.
+>>>>>>> c74cc4a34d60fafac458270060ab9aed0ebb4c58

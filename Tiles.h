@@ -37,6 +37,7 @@ protected:
 //--TILE CLASSES--
 class Tile_Null : public Tile
 {
+public:
 	const static TileID ID = Null;
 	const static char symbol = ' ';
 
@@ -44,9 +45,9 @@ class Tile_Null : public Tile
 
 class Tile_Rock : public Tile
 {
-	const static TileID ID = Rock;
-	const static char symbol = '#';
 public:
+	const static TileID ID = Rock;
+	const static char symbol = 'R';
 	Tile_Rock();
 	~Tile_Rock();
 };
