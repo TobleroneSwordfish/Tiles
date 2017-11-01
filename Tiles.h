@@ -1,14 +1,23 @@
 #pragma once
 #include "vector"
+#include "World.h"
 enum TileID {TILE_NULL, TILE_ROCK, TILE_WOOD};
+enum EffectID {EFFECT_FIRE, EFFECT_PLANT};
 //--BASE CLASSES--
+class Tile;
+class World;
 
 //tile effects are applied to tiles and have their own independant update functions
 class TileEffect
 {
-	enum EffectID {Burning, Plant};
+public:
 	EffectID ID;
-	void Update();
+	virtual void Update();
+	TileEffect();
+	~TileEffect();
+	Tile *parent;
+private:
+	int lifeTime = 0;
 };
 
 //base class for all tiles
@@ -19,7 +28,11 @@ public:
 	Tile();
 	~Tile();
 	int x, y;
+	World *world;
 	char symbol;
+	bool flammable = false; //can catch fire
+	int catchTime; //how many turns it has to be next to a fire in order to catch
+	int burnTime; //how many turns it will burn for
 	std::vector<TileEffect> effects;
 };
 
@@ -29,7 +42,7 @@ class ActiveTile : public Tile
 public:
 	ActiveTile();
 	~ActiveTile();
-	void Update();
+	virtual void Update();
 	static std::vector<ActiveTile> allActives;
 };
 
@@ -37,7 +50,6 @@ public:
 class TileNull : public Tile
 {
 public:
-	const static TileID ID = TILE_NULL;
 	TileNull();
 	~TileNull();
 };
@@ -45,7 +57,22 @@ public:
 class TileRock : public Tile
 {
 public:
-	const static TileID ID = TILE_ROCK;
 	TileRock();
 	~TileRock();
+};
+
+class TileWood : public Tile
+{
+public:
+	TileWood();
+	~TileWood();
+};
+
+//--EFFECT CLASSES--
+class EffectFire : public TileEffect
+{
+public:
+	EffectFire();
+	~EffectFire();
+	void Update();
 };

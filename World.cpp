@@ -8,13 +8,21 @@
 		{
 			for (int y = 0; y <= yLimit; y++)
 			{
-				grid[x][y] = new TileNull();
+				Tile *newTile = new TileNull();
+				grid[x][y] = newTile;
+				newTile->world = this;
 			}
 		}
 	}
 	World::~World()
 	{
-
+		for (int x = 0; x <= xLimit; x++)
+		{
+			for (int y = 0; y <= yLimit; y++)
+			{
+				delete grid[x][y];
+			}
+		}
 	}
 	Tile *World::GetTile(int x, int y)
 	{
@@ -22,7 +30,11 @@
 	}
 	void World::SetTile(int x, int y, Tile *newTile)
 	{
-		delete grid[x][y];
+		if (grid[x][y] != nullptr)
+		{
+			delete grid[x][y];
+		}
+		newTile->world = this;
 		grid[x][y] = newTile;
 	}
 	// void World::SetTile(int x, int y, TileID ID)
@@ -75,7 +87,7 @@
 		{
 			for (int i = 0; i < ActiveTile::allActives.size(); i++)
 			{
-				//ActiveTile::allActives[i].Update();
+				ActiveTile::allActives[i].Update();
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 #pragma once
 #include "Tiles.h"
+class Tile;
 class World
 {
 public:
