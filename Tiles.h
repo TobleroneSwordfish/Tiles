@@ -1,5 +1,6 @@
 #pragma once
 #include "vector"
+enum TileID {TILE_NULL, TILE_ROCK, TILE_WOOD};
 //--BASE CLASSES--
 
 //tile effects are applied to tiles and have their own independant update functions
@@ -14,7 +15,6 @@ class TileEffect
 class Tile
 {
 public:
-	enum TileID {Null, Rock, Wood};
 	TileID ID;
 	Tile();
 	~Tile();
@@ -30,24 +30,22 @@ public:
 	ActiveTile();
 	~ActiveTile();
 	void Update();
-protected:
 	static std::vector<ActiveTile> allActives;
 };
 
 //--TILE CLASSES--
-class Tile_Null : public Tile
+class TileNull : public Tile
 {
 public:
-	const static TileID ID = Null;
-	const static char symbol = ' ';
-
+	const static TileID ID = TILE_NULL;
+	TileNull();
+	~TileNull();
 };
 
-class Tile_Rock : public Tile
+class TileRock : public Tile
 {
 public:
-	const static TileID ID = Rock;
-	const static char symbol = 'R';
-	Tile_Rock();
-	~Tile_Rock();
+	const static TileID ID = TILE_ROCK;
+	TileRock();
+	~TileRock();
 };
