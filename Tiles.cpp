@@ -19,7 +19,12 @@ ActiveTile::~ActiveTile()
 	
 }
 
-Tile_Rock::Tile_Rock()
+TileNull::TileNull()
 {
+	symbol = ' ';
+}
 
+TileRock::TileRock()
+{
+	symbol = 'R';
 }
