@@ -21,7 +21,14 @@ void ActiveTile::Update()
 
 ActiveTile::~ActiveTile()
 {
-	
+	for (int i = 0; i < allActives.size; i++)
+	{
+		if (&allActives[i] == this)
+		{
+			allActives.erase(allActives.begin() + i);
+			return;
+		}
+	}
 }
 
 TileEffect::TileEffect()
@@ -61,8 +68,25 @@ EffectFire::EffectFire()
 {
 	ID = EFFECT_FIRE;
 }
+
 void EffectFire::Update()
 {
 	TileEffect::Update();
 	World *world = parent->world;
+	int values[] = {1, -1};
+	bool found = false;
+	int xOffset = 0;
+	int yOffset = 0;
+	if (rand() % 2 == 0)
+	{
+		yOffset = values[rand() % 2];
+	}
+	else
+	{
+		xOffset = values[rand() % 2];
+	}
+	if (world->GetTile(parent->x + xOffset, parent->y + yOffset)->flammable) //is the chosen tile flammable?
+	{
+
+	}
 }

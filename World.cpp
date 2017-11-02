@@ -30,10 +30,7 @@
 	}
 	void World::SetTile(int x, int y, Tile *newTile)
 	{
-		if (grid[x][y] != nullptr)
-		{
-			delete grid[x][y];
-		}
+		delete grid[x][y];
 		newTile->world = this;
 		grid[x][y] = newTile;
 	}
