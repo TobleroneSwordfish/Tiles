@@ -16,6 +16,7 @@ public:
 	TileEffect();
 	~TileEffect();
 	Tile *parent;
+	char symbol;
 private:
 	int lifeTime = 0;
 };

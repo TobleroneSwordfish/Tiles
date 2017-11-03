@@ -1,4 +1,7 @@
 #include "Tiles.h"
+#include <cstdlib>
+//debugging, remove after
+#include <iostream>
 Tile::Tile()
 {
 
@@ -21,7 +24,7 @@ void ActiveTile::Update()
 
 ActiveTile::~ActiveTile()
 {
-	for (int i = 0; i < allActives.size; i++)
+	for (int i = 0; i < allActives.size(); i++)
 	{
 		if (&allActives[i] == this)
 		{
@@ -67,6 +70,11 @@ TileWood::TileWood()
 EffectFire::EffectFire()
 {
 	ID = EFFECT_FIRE;
+	symbol = 'f';
+}
+EffectFire::~EffectFire()
+{
+
 }
 
 void EffectFire::Update()
@@ -85,13 +93,10 @@ void EffectFire::Update()
 	{
 		xOffset = values[rand() % 2];
 	}
+	std::cout << "fire trying to spread to tile at " << (parent->x + xOffset) << ", " << (parent->y + yOffset) << std::endl;
 	if (world->GetTile(parent->x + xOffset, parent->y + yOffset)->flammable) //is the chosen tile flammable?
 	{
-<<<<<<< HEAD
-=======
-		EffectFire *newFire = new EffectFire();
-		world->GetTile(parent->x + xOffset, parent->y + yOffset)->effects->push_back(newFire);
->>>>>>> 69b51cccc02461116be5fba127f32b5400ea6a96
-
+		Tile *target = world->GetTile(parent->x + xOffset, parent->y + yOffset);
+		target->effects.push_back(EffectFire());
 	}
 }
