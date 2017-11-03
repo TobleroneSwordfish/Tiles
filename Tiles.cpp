@@ -87,6 +87,11 @@ void EffectFire::Update()
 	}
 	if (world->GetTile(parent->x + xOffset, parent->y + yOffset)->flammable) //is the chosen tile flammable?
 	{
+<<<<<<< HEAD
+=======
+		EffectFire *newFire = new EffectFire();
+		world->GetTile(parent->x + xOffset, parent->y + yOffset)->effects->push_back(newFire);
+>>>>>>> 69b51cccc02461116be5fba127f32b5400ea6a96
 
 	}
 }
