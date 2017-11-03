@@ -44,6 +44,7 @@ TileEffect::~TileEffect()
 }
 void TileEffect::Update()
 {
+	std::cout << "Base TileEffect.Update called" << std::endl;
 	lifeTime++;
 }
 
@@ -79,6 +80,7 @@ EffectFire::~EffectFire()
 
 void EffectFire::Update()
 {
+	std::cout << "Fire update called" << std::endl;
 	TileEffect::Update();
 	World *world = parent->world;
 	int values[] = {1, -1};

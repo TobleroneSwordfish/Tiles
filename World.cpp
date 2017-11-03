@@ -83,13 +83,10 @@
 		{
 			for (int y = 0; y < yLimit; y++)
 			{
-				if (grid[x][y]->effects.size() != 0)
+				for (int i = 0; i < grid[x][y]->effects.size(); i++)
 				{
-					for (int i = 0; i < grid[x][y]->effects.size(); i++)
-					{
-						std::cout << "Effect found at " << x << "," << y << " symbol: " << grid[x][y]->effects[i].symbol;
-						grid[x][y]->effects[i].Update();
-					}
+					std::cout << "Effect found at " << x << "," << y << " symbol: " << grid[x][y]->effects[i].symbol << std::endl;
+					grid[x][y]->effects[i].Update();
 				}
 			}
 		}
