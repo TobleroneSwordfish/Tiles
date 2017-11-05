@@ -31,63 +31,83 @@
 	}
 	void World::SetTile(int x, int y, Tile *newTile)
 	{
-		delete grid[x][y];
 		newTile->world = this;
+		newTile->x = x;
+		newTile->y = y;
 		grid[x][y] = newTile;
 	}
 	//draw the world to the console, would love to get actual graphics going later (OpenGL?)
+	//am aware this is a bit of a mess, but don't have time to fix it rn
 	void World::Render()
 	{
 		for (int y = yLimit; y >= 0; y--)
 		{
 			//render initial bar across the top
-			for (int x = 0; x < xLimit; x++)
+			std::cout << "  ";
+			for (int x = 0; x <= xLimit; x++)
 			{
 				std::cout << "+---";
 			}
-			std::cout << "+" << std::endl;
+			std::cout << "+" << std::endl << "  ";
 			//render the top row of the box
-			for (int x = 0; x < xLimit; x++)
+			for (int x = 0; x <= xLimit; x++)
 			{
 				Tile *currentTile = GetTile(x,y);
-				std::cout << "|  " << (currentTile->effects.size() > 0 ? currentTile->effects[0].symbol : ' ');
+				std::cout << "|";
+				for (int i = 0; i <3; i++) //<3
+				{
+					std::cout << (currentTile->effects.size() > i ? currentTile->effects[i]->symbol : ' ');
+				}
 			}
 			std::cout << "|" << std::endl;
+			//display y coordinate of row
+			std::cout << y << (y < 10 ? " " : "");
 			//render middle row, including main tile symbol
-			for (int x = 0; x < xLimit; x++)
+			for (int x = 0; x <= xLimit; x++)
 			{
 				std::cout << "| " << GetTile(x, y)->symbol << " ";
 			}
-			std::cout << "|" << std::endl;
+			std::cout << "|" << std::endl << "  ";
 			//render bottom row
-			for (int x = 0; x < xLimit; x++)
+			for (int x = 0; x <= xLimit; x++)
 			{
 				std::cout << "|   ";
 			}
 			std::cout << "|" << std::endl;
 		}
 		//stick another bar on the bottom
-		for (int x = 0; x < xLimit; x++)
+		std::cout << "  ";
+		for (int x = 0; x <= xLimit; x++)
 		{
 			std::cout << "+---";
 		}
 		std::cout << "+" << std::endl;
+		//display x coordinate of column
+		std::cout << "    ";
+		for (int x = 0; x <= xLimit; x++)
+		{
+			std::cout << x << (x < 10 ? "   " : "  ");
+		}
+		std::cout << std::endl;
 	}
 	void World::Advance()
 	{
 		for (int i = 0; i < ActiveTile::allActives.size(); i++)
 		{
-			ActiveTile::allActives[i].Update();
+			ActiveTile::allActives[i]->Update();
 		}
 		for (int x = 0; x < xLimit; x++)
 		{
 			for (int y = 0; y < yLimit; y++)
 			{
-				for (int i = 0; i < grid[x][y]->effects.size(); i++)
+				std::vector<TileEffect*> *tileEffects = &(grid[x][y]->effects);
+				for (auto i = tileEffects->begin(); i != tileEffects->end(); i++)
 				{
-					std::cout << "Effect found at " << x << "," << y << " symbol: " << grid[x][y]->effects[i].symbol << std::endl;
-					grid[x][y]->effects[i].Update();
+					//std::cout << "Effect found at " << x << "," << y << " symbol: " << (*i)->symbol << std::endl;
+					(*i)->Update();
 				}
 			}
 		}
+		//this turn is complete, increment turn number
+		turn++;
 	}

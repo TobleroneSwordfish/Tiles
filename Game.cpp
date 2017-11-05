@@ -26,11 +26,13 @@ void mySleep(int sleepMs)
 
 void Play(World *world)
 {
+	world->Render();
 	while (true)
 	{
-		world->Render();
+		std::cin.ignore();
 		world->Advance();
-		mySleep(FRAME_TIME);
+		world->Render();
+		//mySleep(FRAME_TIME);
 	}
 }
 
@@ -40,13 +42,27 @@ int main()
 	TileRock *rock;
 	rock = new TileRock();
 	//std::cout << "Rock ID: " << rock->ID << " symbol: " << rock->symbol << std::endl;
-	bob.SetTile(2, 2, rock);
-	Tile *shouldBeRock = bob.GetTile(2,2);
-	std::cout << "GetTile ID: " << shouldBeRock->ID << " symbol: " << shouldBeRock->symbol << std::endl;
+	//bob.SetTile(2, 3, rock);
+	bob.SetTile(4, 3, rock);
+	bob.SetTile(2,2, new TileConveyor(NORTH));
+	bob.SetTile(3,3, new TileConveyor(EAST));
+	bob.SetTile(4,2, new TileConveyor(SOUTH));
+	bob.SetTile(3,1, new TileConveyor(WEST));
+	//Tile *shouldBeRock = bob.GetTile(2,2);
+	//std::cout << "GetTile ID: " << shouldBeRock->ID << " symbol: " << shouldBeRock->symbol << std::endl;
 	
-	bob.SetTile(5,5, new TileWood());
-	bob.SetTile(6,5, new TileWood());
-	bob.SetTile(7,5, new TileWood());
-	bob.GetTile(5,5)->effects.push_back(EffectFire());
+	bob.SetTile(5,6, new TileWood());
+	bob.SetTile(6,6, new TileWood());
+	bob.SetTile(7,6, new TileWood());
+	bob.SetTile(5,7, new TileWood());
+	bob.SetTile(5,8, new TileWood());
+	bob.SetTile(4,8, new TileWood());
+	bob.SetTile(4,6, new TileWood());
+	bob.SetTile(4,7, new TileWood());
+	bob.SetTile(6,7, new TileWood());
+	bob.SetTile(7,7, new TileWood());
+	bob.SetTile(6,8, new TileWood());
+	bob.SetTile(7,8, new TileWood());
+	bob.GetTile(5,6)->AddEffect(new EffectFire());
 	Play(&bob);
 }
