@@ -1,7 +1,6 @@
 #include "Tiles.h"
 #include <cstdlib>
 #include <random>
-//debugging, remove after
 #include <iostream>
 Tile::Tile()
 {
@@ -11,11 +10,14 @@ Tile::Tile()
 //not exactly sure how to free all the tile effects, this code causes a segfault, hence it being commented out
 Tile::~Tile()
 {
-	// for (auto i = effects.begin(); i != effects.end(); i++)
+	// if (effects.size() != 0)
 	// {
-	// 	delete *i;
+	// 	for (auto i = effects.begin(); i != effects.end(); i++)
+	// 	{
+	// 		 delete *i;
+	// 	}
+	// 	effects.clear();
 	// }
-	// effects.clear();
 }
 
 void Tile::AddEffect(TileEffect *effect)
@@ -49,6 +51,7 @@ void ActiveTile::Update()
 
 ActiveTile::~ActiveTile()
 {
+	//remove the pointer to this tile from the list of all active tiles
 	for (int i = 0; i < allActives.size(); i++)
 	{
 		if (allActives[i] == this)
@@ -90,7 +93,7 @@ TileWood::TileWood()
 	ID = TILE_WOOD;
 	symbol = 'W';
 	flammable = true;
-	burnTime = 3;
+	burnTime = 7;
 }
 
 TileAsh::TileAsh()
@@ -129,10 +132,48 @@ void TileConveyor::Update()
 	//check that we're moving a non-null tile to a null tile, and that the tile we're moving hasn't moved already this turn
 	if (origin->ID != TILE_NULL && nextTile->ID == TILE_NULL && origin->lastMoved != world->turn)
 	{
-		std::cout << "Moving tile ID " << origin->ID << " from " << x + ox << "," << y + oy << " to " << x - ox << "," << y - oy << std::endl;
+		std::cout << "Conveyor moving tile ID " << origin->ID << " from " << x + ox << "," << y + oy << " to " << x - ox << "," << y - oy << std::endl;
 		world->SetTile(x - ox, y - oy, origin);
 		world->SetTile(x + ox, y + oy, new TileNull());
 		origin->lastMoved = world->turn;
+	}
+}
+
+TileLaser::TileLaser()
+{
+	ID = TILE_LASER;
+	symbol = '-';
+}
+
+void TileLaser::Update()
+{
+	//look for flammable tile to set on fire
+	for (int i = x; i <= world->xLimit; i++)
+	{
+		Tile *currentTile = world->GetTile(i, y);
+		if (currentTile->flammable)
+		{
+			if (!currentTile->HasEffect(EFFECT_FIRE))
+			{
+				currentTile->AddEffect(new EffectFire);	
+				std::cout << "Laser at " << x << "," << y << " set fire to tile at " << currentTile->x << "," << currentTile->y << std::endl;
+			}
+			break;
+		}
+	}
+	//copy pasted code here, ik but it's nearly midnight and I'll deal with it later
+	for (int i = x; i >= 0; i--)
+	{
+		Tile *currentTile = world->GetTile(i, y);
+		if (currentTile->flammable)
+		{
+			if (!currentTile->HasEffect(EFFECT_FIRE))
+			{
+				currentTile->AddEffect(new EffectFire);	
+				std::cout << "Laser at " << x << "," << y << " set fire to tile at " << currentTile->x << "," << currentTile->y << std::endl;
+			}
+			break;
+		}
 	}
 }
 
@@ -148,12 +189,8 @@ EffectFire::~EffectFire()
 }
 
 //fire can spread to any directly adjacent tile, it will pick one of the four randomly each tick and attempt to spread to it
-//fire will burn down to ash after a number of turns defined by the tile it is burning
-void EffectFire::Update()
+void EffectFire::Spread()
 {
-	//call the base
-	TileEffect::Update();
-	World *world = parent->world;
 	//list of offset values to select from
 	int values[] = {1, -1};
 	int xOffset = 0;
@@ -172,11 +209,28 @@ void EffectFire::Update()
 		//std::cout << "checking x" << std::endl;
 		xOffset = rOff;
 	}
-	Tile *target = world->GetTile(parent->x + xOffset, parent->y + yOffset);
+	Tile *target = parent->world->GetTile(parent->x + xOffset, parent->y + yOffset);
 	if (target->flammable && !target->HasEffect(this->ID)) //is the chosen tile flammable and not already on fire
 	{
-		target->AddEffect(new EffectFire());
+		EffectFire *nextFire = new EffectFire();
+		nextFire->lastSpread = parent->world->turn;
+		lastSpread = parent->world->turn;
+		target->AddEffect(nextFire);
+		std::cout << "Fire spreading from " << parent->x << "," << parent->y << " to " << target->x << "," << target->y << std::endl;
 	}
+}
+
+//fire will burn down to ash after a number of turns defined by the tile it is burning
+void EffectFire::Update()
+{
+	//call the base
+	TileEffect::Update();
+	World *world = parent->world;
+	if (world->turn > lastSpread + 1)
+	{
+		Spread();
+	}
+	//Spread();
 	//check if the fire has burned out
 	if (lifeTime > parent->burnTime)
 	{

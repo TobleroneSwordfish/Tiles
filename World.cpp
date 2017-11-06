@@ -1,5 +1,4 @@
 #include "World.h"
-//#include <cstdio>
 #include <iostream>
 	World::World()
 	{
@@ -103,7 +102,6 @@
 				std::vector<TileEffect*> *tileEffects = &(grid[x][y]->effects);
 				for (auto i = tileEffects->begin(); i != tileEffects->end(); i++)
 				{
-					//std::cout << "Effect found at " << x << "," << y << " symbol: " << (*i)->symbol << std::endl;
 					(*i)->Update();
 				}
 			}
