@@ -5,6 +5,7 @@ class World
 {
 public:
 	World();
+	World(char *path);
 	~World();
 	int turn = 0;
 	Tile *GetTile(int x, int y);

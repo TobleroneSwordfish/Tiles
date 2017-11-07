@@ -13,6 +13,10 @@
 			}
 		}
 	}
+	World::World(char *path)
+	{
+		
+	}
 	//I think this is the correct way to clear up a heap array?
 	World::~World()
 	{

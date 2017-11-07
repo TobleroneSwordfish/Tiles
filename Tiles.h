@@ -1,7 +1,7 @@
 #pragma once
 #include "vector"
 #include "World.h"
-enum TileID {TILE_NULL, TILE_ROCK, TILE_WOOD, TILE_ASH, TILE_CONVEYOR, TILE_LASER};
+enum TileID {TILE_NULL, TILE_ROCK, TILE_WOOD, TILE_ASH, TILE_CONVEYOR, TILE_LASER, TILE_EARTH, TILE_WATER};
 enum EffectID {EFFECT_FIRE, EFFECT_PLANT};
 enum Direction {NORTH, SOUTH, EAST, WEST};
 //--BASE CLASSES--
@@ -36,6 +36,7 @@ public:
 	bool flammable = false; //can catch fire
 	int burnTime; //how many turns it will burn for
 	int lastMoved = -1; //the last turn that this tile was moved by a conveyor
+	int humidity = 0;
 	std::vector<TileEffect*> effects;
 	void AddEffect(TileEffect *effect);
 	bool HasEffect(EffectID effect);
@@ -95,6 +96,19 @@ class TileLaser : public ActiveTile
 public:
 	TileLaser();
 	~TileLaser();
+	void Update();
+};
+
+class TileEarth : public Tile
+{
+	TileEarth();
+	~TileEarth();
+};
+
+class TileWater : public ActiveTile
+{
+	TileWater();
+	~TileWater();
 	void Update();
 };
 

@@ -177,6 +177,18 @@ void TileLaser::Update()
 	}
 }
 
+TileEarth::TileEarth()
+{
+	symbol = 'E';
+	ID = TILE_EARTH;
+}
+
+TileWater::TileWater()
+{
+	symbol = 'B';
+	ID = TILE_WATER;
+}
+
 //--EFFECT CLASSES
 EffectFire::EffectFire()
 {
