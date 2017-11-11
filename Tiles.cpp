@@ -38,6 +38,11 @@ bool Tile::HasEffect(EffectID effect)
 	return false;
 }
 
+Text *Tile::Inspect()
+{
+	Text *output = new Text();
+	output->Append("ID: ")
+}
 std::vector<ActiveTile*> ActiveTile::allActives;
 ActiveTile::ActiveTile()
 {

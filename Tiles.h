@@ -1,6 +1,7 @@
 #pragma once
 #include "vector"
 #include "World.h"
+#include "Text.h"
 enum TileID {TILE_NULL, TILE_ROCK, TILE_WOOD, TILE_ASH, TILE_CONVEYOR, TILE_LASER, TILE_EARTH, TILE_WATER};
 enum EffectID {EFFECT_FIRE, EFFECT_PLANT};
 enum Direction {NORTH, SOUTH, EAST, WEST};
@@ -36,10 +37,11 @@ public:
 	bool flammable = false; //can catch fire
 	int burnTime; //how many turns it will burn for
 	int lastMoved = -1; //the last turn that this tile was moved by a conveyor
-	int humidity = 0;
+	int humidity = 0; //how damp something is, being next to water increased this every turn
 	std::vector<TileEffect*> effects;
 	void AddEffect(TileEffect *effect);
 	bool HasEffect(EffectID effect);
+	Text *Inspect();
 };
 
 //tile with an update func, basically one that does something every turn
