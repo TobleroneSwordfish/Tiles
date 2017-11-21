@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <random>
 #include <iostream>
+#include <string>
+#include <sstream>
 Tile::Tile()
 {
 
@@ -38,10 +40,18 @@ bool Tile::HasEffect(EffectID effect)
 	return false;
 }
 
-Text *Tile::Inspect()
+char *Tile::Inspect()
 {
-	Text *output = new Text();
-	output->Append("ID: ")
+	//gotta love C++ for this at least
+	std::ostringstream output;
+	output << "ID: " << ID << "\n";
+	output << "Symbol: " << symbol << "\n";
+	output << "Position: " << x << ", " << y << "\n";
+	for (auto pointer = effects.begin(); pointer != effects.end(); pointer ++)
+	{
+		output << (*pointer)->Inspect();
+	}
+	return (output.str().c_str());
 }
 std::vector<ActiveTile*> ActiveTile::allActives;
 ActiveTile::ActiveTile()

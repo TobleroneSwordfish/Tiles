@@ -3,7 +3,7 @@
 
 Text::Text()
 {
-    array = "";
+    //array = "";
 }
 
 Text::Text(char *cString)
@@ -13,17 +13,16 @@ Text::Text(char *cString)
 
 Text::~Text()
 {
-    delete [] array;
-    array = nullptr;
+    //delete lines;
 }
 
-void Text::SetString(char *cString)
-{
-    length = strlen(cString);
-    delete [] array;
-    array = new char[length];
-    strcpy(array, cString);
-}
+// void Text::SetString(char *cString)
+// {
+//     length = strlen(cString);
+//     delete [] array;
+//     array = new char[length];
+//     strcpy(array, cString);
+// }
 
 void Text::Append(Text *text)
 {
@@ -38,6 +37,11 @@ void Text::Append(char *cString)
     array = new char[length];
     strcpy(array, temp);
     strcat(array, cString);
+}
+
+void Text::AppendLine(char *cString)
+{
+    
 }
 
 char *Text::GetString()

@@ -41,7 +41,7 @@ public:
 	std::vector<TileEffect*> effects;
 	void AddEffect(TileEffect *effect);
 	bool HasEffect(EffectID effect);
-	Text *Inspect();
+	char *Inspect();
 };
 
 //tile with an update func, basically one that does something every turn
