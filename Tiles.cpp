@@ -40,14 +40,14 @@ bool Tile::HasEffect(EffectID effect)
 	return false;
 }
 
-char *Tile::Inspect()
+const char *Tile::Inspect()
 {
 	//gotta love C++ for this at least
 	std::ostringstream output;
 	output << "ID: " << ID << "\n";
 	output << "Symbol: " << symbol << "\n";
 	output << "Position: " << x << ", " << y << "\n";
-	for (auto pointer = effects.begin(); pointer != effects.end(); pointer ++)
+	for (auto pointer = effects.begin(); pointer != effects.end(); pointer++)
 	{
 		output << (*pointer)->Inspect();
 	}
