@@ -14,7 +14,7 @@ Tile::Tile()
 //not exactly sure how to free all the tile effects, this code causes a segfault, hence it being commented out
 Tile::~Tile()
 {
-	// if (effects.size() != 0)
+	// if (effectsCount > 0)
 	// {
 	// 	for (auto i = effects.begin(); i != effects.end(); i++)
 	// 	{
