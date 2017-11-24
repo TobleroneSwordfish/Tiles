@@ -1,7 +1,8 @@
 #pragma once
 #include "vector"
 #include "World.h"
-#include "Text.h"
+#include <string>
+//#include "Text.h"
 enum TileID {TILE_NULL, TILE_ROCK, TILE_WOOD, TILE_ASH, TILE_CONVEYOR, TILE_LASER, TILE_EARTH, TILE_WATER};
 enum EffectID {EFFECT_FIRE, EFFECT_PLANT};
 enum Direction {NORTH, SOUTH, EAST, WEST};
@@ -16,7 +17,7 @@ class TileEffect
 public:
 	EffectID ID;
 	virtual void Update();
-	
+	std::string Inspect();
 	TileEffect();
 	~TileEffect();
 	Tile *parent;
@@ -41,8 +42,11 @@ public:
 	int humidity = 0; //how damp something is, being next to water increased this every turn
 	std::vector<TileEffect*> effects;
 	void AddEffect(TileEffect *effect);
+	void RemoveEffect(TileEffect *effect);
 	bool HasEffect(EffectID effect);
-	const char *Inspect();
+	std::string Inspect();
+protected:
+	int effectsCount = 0;
 };
 
 //tile with an update func, basically one that does something every turn

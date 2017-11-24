@@ -1,5 +1,6 @@
 #include "World.h"
 #include <iostream>
+#include <string>
 #include <cassert>
 #include <cstring>
 
@@ -8,7 +9,26 @@ void Play(World *world)
 	world->Render();
 	while (true)
 	{
-		std::cin.ignore();
+		char input;
+		std::cin >> input;
+		if (input == 'i')
+		{
+			int x = -1;
+			while (x < 0 || x > (world->xLimit))
+			{
+				std::cout << "x coord: ";
+				std::cin >> x;
+			}
+			//x -= '0';
+			int y = -1;
+			while (y < 0 || y > (world->yLimit))
+			{
+				std::cout << "\ny coord: ";
+				std::cin >> y;
+			}
+			//y -= '0';
+			std::cout << "\n" << world->InspectTile(x, y).c_str();
+		}
 		world->Advance();
 		world->Render();
 	}

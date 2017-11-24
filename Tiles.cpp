@@ -4,9 +4,11 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 Tile::Tile()
 {
-
+	//std::cout << "Tile base constructor called";
+	effects = std::vector<TileEffect*>(0);
 }
 
 //not exactly sure how to free all the tile effects, this code causes a segfault, hence it being commented out
@@ -26,6 +28,13 @@ void Tile::AddEffect(TileEffect *effect)
 {
 	effects.push_back(effect);
 	effect->parent = this;
+	effectsCount++;
+}
+
+void Tile::RemoveEffect(TileEffect *effect)
+{
+	effects.erase(std::remove(effects.begin(), effects.end(), effect), effects.end());
+	effectsCount--;
 }
 
 bool Tile::HasEffect(EffectID effect)
@@ -40,18 +49,23 @@ bool Tile::HasEffect(EffectID effect)
 	return false;
 }
 
-const char *Tile::Inspect()
+std::string Tile::Inspect()
 {
 	//gotta love C++ for this at least
 	std::ostringstream output;
 	output << "ID: " << ID << "\n";
 	output << "Symbol: " << symbol << "\n";
 	output << "Position: " << x << ", " << y << "\n";
-	for (auto pointer = effects.begin(); pointer != effects.end(); pointer++)
+	output << "Effects: \n";
+	//std::cout << "Effects size: " << effects.size();
+	if (effectsCount > 0)
 	{
-		output << (*pointer)->Inspect();
+		for (auto pointer = effects.begin(); pointer != effects.end(); pointer++)
+		{
+			output << "   " << (*pointer)->Inspect();
+		}
 	}
-	return (output.str().c_str());
+	return output.str();
 }
 std::vector<ActiveTile*> ActiveTile::allActives;
 ActiveTile::ActiveTile()
@@ -88,6 +102,14 @@ TileEffect::~TileEffect()
 void TileEffect::Update()
 {
 	lifeTime++;
+}
+
+std::string TileEffect::Inspect()
+{
+	std::ostringstream output;
+	output << "ID: " << ID << "\n";
+	output << "Symbol: " << symbol << "\n";
+	return output.str();
 }
 
 //--TILE CLASSES
@@ -200,8 +222,13 @@ TileEarth::TileEarth()
 
 TileWater::TileWater()
 {
-	symbol = 'B';
+	symbol = '~';
 	ID = TILE_WATER;
+}
+
+void TileWater::Update()
+{
+	//stuff stuff stuff
 }
 
 //--EFFECT CLASSES

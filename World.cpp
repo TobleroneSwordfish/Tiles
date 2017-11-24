@@ -113,3 +113,7 @@
 		//this turn is complete, increment turn number
 		turn++;
 	}
+	std::string World::InspectTile(int x, int y)
+	{
+		return GetTile(x,y)->Inspect();
+	}
