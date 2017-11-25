@@ -1,1 +1,1 @@
-g++ Game.cpp World.cpp Tiles.cpp Tiles-Base.cpp -fno-exceptions -std=c++11 -o Binary
+g++ Game.cpp World.cpp Tiles.cpp Tiles-Base.cpp -std=c++11 -o Binary

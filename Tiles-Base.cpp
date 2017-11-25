@@ -3,9 +3,19 @@
 #include <algorithm>
 #include <iostream>
 
+void to_json(json &j, const Tile &t)
+{
+    j = json{{"ID", t.ID}, {"x", t.x}, {"y", t.y}, {"symbol", t.symbol}};
+    //j.push_back({"effects", t.effects});
+}
+
+void to_json(json &j, const TileEffect &e)
+{
+    j = json{{"ID", e.ID}, {"symbol", e.symbol}, {"lifetime", e.lifeTime}};
+}
+
 Tile::Tile()
 {
-	//std::cout << "Tile base constructor called";
 	effects = std::vector<TileEffect*>(0);
 }
 
@@ -65,6 +75,13 @@ std::string Tile::Inspect()
 	}
 	return output.str();
 }
+
+json Tile::ToJson()
+{
+    json j = *this;
+    return j;
+}
+
 std::vector<ActiveTile*> ActiveTile::allActives;
 ActiveTile::ActiveTile()
 {

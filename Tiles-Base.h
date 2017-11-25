@@ -2,7 +2,9 @@
 //#include "World.h"
 #include <string>
 #include "vector"
+#include "json.hpp"
 
+using json = nlohmann::json;
 enum TileID {TILE_NULL, TILE_ROCK, TILE_WOOD, TILE_ASH, TILE_CONVEYOR, TILE_LASER, TILE_EARTH, TILE_WATER};
 enum EffectID {EFFECT_FIRE, EFFECT_PLANT};
 enum Direction {NORTH, SOUTH, EAST, WEST};
@@ -22,7 +24,7 @@ public:
 	~TileEffect();
 	Tile *parent;
 	char symbol;
-protected:
+//protected:
 	int lifeTime = 0;
 };
 
@@ -45,7 +47,9 @@ public:
 	void RemoveEffect(TileEffect *effect);
 	bool HasEffect(EffectID effect);
 	std::string Inspect();
-protected:
+    json ToJson();
+    Tile *FromID(TileID id);
+//protected:
 	int effectsCount = 0;
 };
 
@@ -59,3 +63,6 @@ public:
 	//a list of all the active tile, to save having to check each tile on the grid every turn
 	static std::vector<ActiveTile*> allActives;
 };
+
+void to_json(json &j, const Tile &t);
+void to_json(json &j, const TileEffect &e);

@@ -15,6 +15,7 @@ public:
 	const static int xLimit = 10, yLimit = 10;
 	void Render();
 	void Advance();
+	void Save(char *path);
 private:
 	Tile *grid[xLimit + 1][yLimit + 1];
 };

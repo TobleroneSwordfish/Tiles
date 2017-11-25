@@ -29,6 +29,10 @@ void Play(World *world)
 			//y -= '0';
 			std::cout << "\n" << world->InspectTile(x, y).c_str();
 		}
+		if (input == 's')
+		{
+			world->Save((char*)"thing.json");
+		}
 		world->Advance();
 		world->Render();
 	}

@@ -51,12 +51,14 @@ public:
 
 class TileEarth : public Tile
 {
+public:
 	TileEarth();
 	~TileEarth();
 };
 
 class TileWater : public ActiveTile
 {
+public:
 	TileWater();
 	~TileWater();
 	void Update();

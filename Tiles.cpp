@@ -3,6 +3,21 @@
 #include <random>
 #include <iostream>
 
+Tile *Tile::FromID(TileID id)
+{
+	switch (id)
+	{
+		case TILE_NULL: return new TileNull();
+		case TILE_ROCK: return new TileRock();
+		case TILE_WOOD: return new TileWood();
+		case TILE_ASH: return new TileAsh();
+		case TILE_CONVEYOR: return new TileConveyor(NORTH);
+		case TILE_LASER: return new TileLaser();
+		case TILE_EARTH: return new TileEarth();
+		case TILE_WATER: return new TileWater();
+		default: return new TileNull();
+	}
+}
 
 //--TILE CLASSES
 TileNull::TileNull()
@@ -122,6 +137,8 @@ void TileWater::Update()
 {
 	//stuff stuff stuff
 }
+
+
 
 //--EFFECT CLASSES
 EffectFire::EffectFire()
