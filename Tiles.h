@@ -3,6 +3,10 @@
 #include "Tiles-Base.h"
 #include "World.h"
 
+void to_json(json &j, const Tile &t);
+void to_json(json &j, const TileEffect &e);
+void from_json(const json &j, Tile &t);
+
 //--TILE CLASSES--
 class TileNull : public Tile
 {
@@ -40,6 +44,8 @@ public:
 	~TileConveyor();
 	void Update();
 };
+void to_json(json &j, TileConveyor &tile);
+void from_json(json &j, TileConveyor &tile);
 
 class TileLaser : public ActiveTile
 {

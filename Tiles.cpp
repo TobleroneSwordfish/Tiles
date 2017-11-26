@@ -3,6 +3,31 @@
 #include <random>
 #include <iostream>
 
+void to_json(json &j, TileConveyor &tile)
+{
+	j = ((Tile)tile).BaseToJson();
+	std::cout << "to_json of conveyor called";
+	to_json(j, (Tile)tile);
+	j.push_back(json::object_t::value_type("direction", tile.facing));
+}
+
+void from_json(json &j, TileConveyor &tile)
+{
+	Direction dir = static_cast<Direction>(j.at("direction").get<int>());
+	tile = *(new TileConveyor(dir));
+}
+
+void to_json(json &j, const TileEffect &e)
+{
+    j = json{{"ID", e.ID}, {"symbol", e.symbol}, {"lifetime", e.lifeTime}};
+}
+
+json Tile::ToJson()
+{
+    json j = *this;
+    return j;
+}
+
 Tile *Tile::FromID(TileID id)
 {
 	switch (id)

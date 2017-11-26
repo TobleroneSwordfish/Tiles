@@ -51,6 +51,8 @@ public:
     static Tile *FromID(TileID id);
 //protected:
 	int effectsCount = 0;
+	json BaseToJson();
+	json BaseFromJson();
 };
 
 //tile with an update func, basically one that does something every turn
@@ -64,6 +66,3 @@ public:
 	static std::vector<ActiveTile*> allActives;
 };
 
-void to_json(json &j, const Tile &t);
-void to_json(json &j, const TileEffect &e);
-void from_json(const json &j, Tile &t);
