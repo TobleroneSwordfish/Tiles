@@ -18,17 +18,6 @@ World::World()
 		}
 	}
 }
-World::World(char *path)
-{
-	std::ifstream stream(path);
-	json j;
-	stream >> j;
-	//restofthefuckingcode
-	for (json::iterator iter = j.begin(); iter != j.end(); iter++)
-	{
-		
-	}
-}
 //I think this is the correct way to clear up a heap array?
 World::~World()
 {
@@ -50,6 +39,11 @@ void World::SetTile(int x, int y, Tile *newTile)
 	newTile->x = x;
 	newTile->y = y;
 	grid[x][y] = newTile;
+}
+void World::SetTile(int x, int y, ActiveTile *newActive)
+{
+	SetTile(x,y, (Tile*)newActive);
+	ActiveTile::allActives.push_back(newActive);
 }
 //draw the world to the console, would love to get actual graphics going later (OpenGL?)
 //am aware this is a bit of a mess, but don't have time to fix it rn
@@ -148,4 +142,32 @@ void World::Save(char *path)
 	}
 	std::ofstream stream(path);
 	stream << std::setw(4) << output << std::endl;
+}
+
+void World::Load(char *path)
+{
+	for (int x = 0; x <= xLimit; x++)
+	{
+		for (int y = 0; y <= yLimit; y++)
+		{
+			Tile *newTile = new TileNull();
+			grid[x][y] = newTile;
+			newTile->world = this;
+		}
+	}
+	ActiveTile::allActives.clear();
+	std::ifstream stream(path);
+	json j;
+	stream >> j;
+	//restofthefuckingcode
+	for (json::iterator iter = j.begin(); iter != j.end(); iter++)
+	{
+		Tile t = *iter;
+		//std::cout << "tID: " << t.ID << "\n";
+		Tile *p = Tile::FromID(t.ID);
+		std::memcpy(p, &t, sizeof(Tile));
+		//std::cout << "pID: " << p->ID << "px: " << p->x << ", " << "py: " << p->y << "\n";
+		SetTile(p->x, p->y, p);
+		//std::cout << "ID at x,y: " << GetTile(p->x, p->y) << "\n";
+	}
 }

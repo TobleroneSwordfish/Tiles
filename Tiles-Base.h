@@ -47,8 +47,8 @@ public:
 	void RemoveEffect(TileEffect *effect);
 	bool HasEffect(EffectID effect);
 	std::string Inspect();
-    json ToJson();
-    Tile *FromID(TileID id);
+	json ToJson();
+    static Tile *FromID(TileID id);
 //protected:
 	int effectsCount = 0;
 };
@@ -66,3 +66,4 @@ public:
 
 void to_json(json &j, const Tile &t);
 void to_json(json &j, const TileEffect &e);
+void from_json(const json &j, Tile &t);

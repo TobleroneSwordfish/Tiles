@@ -33,6 +33,11 @@ void Play(World *world)
 		{
 			world->Save((char*)"thing.json");
 		}
+		if (input == 'l')
+		{
+			//*world = *(new World());
+			world->Load((char*)"thing.json");
+		}
 		world->Advance();
 		world->Render();
 	}

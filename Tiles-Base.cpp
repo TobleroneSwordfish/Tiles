@@ -6,12 +6,38 @@
 void to_json(json &j, const Tile &t)
 {
     j = json{{"ID", t.ID}, {"x", t.x}, {"y", t.y}, {"symbol", t.symbol}};
+	json array = json::array();
+	std::cout << "converting Tile to json\n";
+	for (std::vector<TileEffect*>::const_iterator pointer = t.effects.begin(); pointer != t.effects.end(); pointer ++)
+	{
+		TileEffect t = *(*pointer);
+		std::cout << "Effect ID: " << t.ID << "\n";
+		json effect = t;
+		array.push_back(effect);
+	}
+	if (!array.empty())
+	{
+		//json obj;
+		//obj = json{"effects", array};
+		j.push_back(json::object_t::value_type("effects", array));
+	}
     //j.push_back({"effects", t.effects});
+
+
 }
 
 void to_json(json &j, const TileEffect &e)
 {
     j = json{{"ID", e.ID}, {"symbol", e.symbol}, {"lifetime", e.lifeTime}};
+}
+
+void from_json(const json &j, Tile &t)
+{
+	TileID id = static_cast<TileID>(j.at("ID").get<int>());
+	//std::cout << "ID: " << id << "\n";
+	t = *Tile::FromID(id);
+	t.x = j.at("x").get<int>();
+	t.y = j.at("y").get<int>();
 }
 
 Tile::Tile()
@@ -85,7 +111,7 @@ json Tile::ToJson()
 std::vector<ActiveTile*> ActiveTile::allActives;
 ActiveTile::ActiveTile()
 {
-	allActives.push_back(this);
+	
 }
 
 void ActiveTile::Update()
