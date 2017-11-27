@@ -171,6 +171,8 @@ EffectFire::~EffectFire()
 //fire can spread to any directly adjacent tile, it will pick one of the four randomly each tick and attempt to spread to it
 void EffectFire::Spread()
 {
+	//set up the randomiser?
+	srand(time(NULL));
 	//list of offset values to select from
 	int values[] = {1, -1};
 	int xOffset = 0;

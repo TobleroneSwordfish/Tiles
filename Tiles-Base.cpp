@@ -3,41 +3,6 @@
 #include <algorithm>
 #include <iostream>
 
-// void to_json(json &j, const Tile &t)
-// {
-//     j = json{{"ID", t.ID}, {"x", t.x}, {"y", t.y}, {"symbol", t.symbol}};
-// 	json array = json::array();
-// 	std::cout << "converting Tile to json\n";
-// 	for (std::vector<TileEffect*>::const_iterator pointer = t.effects.begin(); pointer != t.effects.end(); pointer ++)
-// 	{
-// 		TileEffect t = *(*pointer);
-// 		std::cout << "Effect ID: " << t.ID << "\n";
-// 		json effect = t;
-// 		array.push_back(effect);
-// 	}
-// 	if (!array.empty())
-// 	{
-// 		//json obj;
-// 		//obj = json{"effects", array};
-// 		j.push_back(json::object_t::value_type("effects", array));
-// 	}
-//     //j.push_back({"effects", t.effects});
-// }
-
-// void to_json(json &j, const TileEffect &e)
-// {
-//     j = json{{"ID", e.ID}, {"symbol", e.symbol}, {"lifetime", e.lifeTime}};
-// }
-
-// void from_json(const json &j, Tile &t)
-// {
-// 	TileID id = static_cast<TileID>(j.at("ID").get<int>());
-// 	//std::cout << "ID: " << id << "\n";
-// 	t = *Tile::FromID(id);
-// 	t.x = j.at("x").get<int>();
-// 	t.y = j.at("y").get<int>();
-// }
-
 Tile::Tile()
 {
 	effects = std::vector<TileEffect*>(0);
@@ -46,7 +11,6 @@ Tile::Tile()
 Tile::Tile(json j)
 {
 	TileID id = static_cast<TileID>(j.at("ID").get<int>());
-	//std::cout << "ID: " << id << "\n";
 	Tile t = *Tile::FromID(id);
 	t.x = j.at("x").get<int>();
 	t.y = j.at("y").get<int>();
@@ -100,12 +64,11 @@ std::string Tile::Inspect()
 	output << "Symbol: " << symbol << "\n";
 	output << "Position: " << x << ", " << y << "\n";
 	output << "Effects: \n";
-	//std::cout << "Effects size: " << effects.size();
 	if (effectsCount > 0)
 	{
 		for (auto pointer = effects.begin(); pointer != effects.end(); pointer++)
 		{
-			output << "   " << (*pointer)->Inspect();
+			output << (*pointer)->Inspect();
 		}
 	}
 	return output.str();
@@ -114,20 +77,20 @@ std::string Tile::Inspect()
 json Tile::ToJson()
 {
     json j;
+	//setup initial JSON object with simple members
 	j = json{{"ID", ID}, {"x", x}, {"y", y}, {"symbol", symbol}, {"direction", facing}};
+	//array to store the effects in
 	json array = json::array();
-	std::cout << "converting Tile to json\n";
 	for (std::vector<TileEffect*>::const_iterator pointer = effects.begin(); pointer != effects.end(); pointer ++)
 	{
+		//dereference the iterator to get the pointer then dereference that to get the value. Phew, see this IS a pointer project!
 		TileEffect t = *(*pointer);
-		std::cout << "Effect ID: " << t.ID << "\n";
 		json effect = t.ToJson();
 		array.push_back(effect);
 	}
+	//no point sticking a potentially problematic array in the json
 	if (!array.empty())
 	{
-		//json obj;
-		//obj = json{"effects", array};
 		j.push_back(json::object_t::value_type("effects", array));
 	}
 	return j;

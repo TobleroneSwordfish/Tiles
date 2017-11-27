@@ -7,39 +7,62 @@
 void Play(World *world)
 {
 	world->Render();
-	while (true)
+	bool exit = false;
+	while (!exit)
 	{
 		char input;
 		std::cin >> input;
-		if (input == 'i')
+		switch (input)
 		{
-			int x = -1;
-			while (x < 0 || x > (world->xLimit))
+			case 'i':
 			{
-				std::cout << "x coord: ";
-				std::cin >> x;
+				int x = -1;
+				while (x < 0 || x > (world->xLimit))
+				{
+					std::cout << "x coord: ";
+					std::cin >> x;
+				}
+				int y = -1;
+				while (y < 0 || y > (world->yLimit))
+				{
+					std::cout << "\ny coord: ";
+					std::cin >> y;
+				}
+				std::cout << "\n" << world->InspectTile(x, y).c_str();
+				break;
 			}
-			//x -= '0';
-			int y = -1;
-			while (y < 0 || y > (world->yLimit))
+			case 's':
 			{
-				std::cout << "\ny coord: ";
-				std::cin >> y;
+				//this filename input isn't safe at all, #willfixitlater
+				std::cout << "Enter filename";
+				std::string path;
+				std::cin >> path;
+				path.append(".json");
+				world->Save(path.c_str());
+				break;
 			}
-			//y -= '0';
-			std::cout << "\n" << world->InspectTile(x, y).c_str();
+			case 'l':
+			{
+				std::cout << "Enter filename";
+				std::string path;
+				std::cin >> path;
+				path.append(".json");			
+				world->Load(path.c_str());
+				world->Render();
+				break;
+			}
+			case 'a':
+			{
+				world->Advance();
+				world->Render();
+				break;
+			}
+			case 'q':
+			{
+				exit = true;
+				break;
+			}
 		}
-		if (input == 's')
-		{
-			world->Save((char*)"thing.json");
-		}
-		if (input == 'l')
-		{
-			//*world = *(new World());
-			world->Load((char*)"thing.json");
-		}
-		world->Advance();
-		world->Render();
 	}
 }
 
@@ -117,35 +140,7 @@ int main(int n, char *args[])
 	{
 		//run the default scenario
 		World test;
-		TileRock *rock;
-		rock = new TileRock();
-		test.SetTile(4, 3, rock);
-		test.SetTile(2,2, new TileConveyor(NORTH));
-		test.SetTile(3,3, new TileConveyor(EAST));
-		test.SetTile(4,2, new TileConveyor(SOUTH));
-		test.SetTile(3,1, new TileConveyor(WEST));
-		
-		test.SetTile(5,6, new TileWood());
-		test.SetTile(6,6, new TileWood());
-		//test.SetTile(7,6, new TileWood());
-		test.SetTile(5,7, new TileWood());
-		test.SetTile(5,8, new TileWood());
-		test.SetTile(4,8, new TileWood());
-		test.SetTile(4,6, new TileWood());
-		test.SetTile(4,7, new TileWood());
-		test.SetTile(6,7, new TileWood());
-		//test.SetTile(7,7, new TileWood());
-		test.SetTile(6,8, new TileWood());
-		//test.SetTile(7,8, new TileWood());
-	
-		test.SetTile(1,9, new TileConveyor(SOUTH));
-		test.SetTile(1,7, new TileConveyor(SOUTH));
-		test.SetTile(2,6, new TileConveyor(EAST));
-		test.SetTile(1,10, new TileWood());
-		test.GetTile(1,10)->AddEffect(new EffectFire());
-	
-		test.SetTile(8,8, new TileLaser());
-		test.SetTile(9,8, new TileWood());
+		test.Load("scenario.json");
 		Play(&test);
 	}
 	else

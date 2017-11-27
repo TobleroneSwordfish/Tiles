@@ -1,0 +1,142 @@
+[
+    {
+        "ID": 4,
+        "direction": 1,
+        "symbol": 86,
+        "x": 1,
+        "y": 7
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "effects": [
+            {
+                "ID": 0,
+                "lifetime": 0,
+                "symbol": 102
+            }
+        ],
+        "symbol": 87,
+        "x": 1,
+        "y": 8
+    },
+    {
+        "ID": 4,
+        "direction": 0,
+        "symbol": 94,
+        "x": 2,
+        "y": 2
+    },
+    {
+        "ID": 4,
+        "direction": 2,
+        "symbol": 62,
+        "x": 2,
+        "y": 6
+    },
+    {
+        "ID": 4,
+        "direction": 3,
+        "symbol": 60,
+        "x": 3,
+        "y": 1
+    },
+    {
+        "ID": 4,
+        "direction": 2,
+        "symbol": 62,
+        "x": 3,
+        "y": 3
+    },
+    {
+        "ID": 4,
+        "direction": 1,
+        "symbol": 86,
+        "x": 4,
+        "y": 2
+    },
+    {
+        "ID": 1,
+        "direction": 0,
+        "symbol": 82,
+        "x": 4,
+        "y": 3
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 4,
+        "y": 6
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 4,
+        "y": 7
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 4,
+        "y": 8
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 5,
+        "y": 6
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 5,
+        "y": 7
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 5,
+        "y": 8
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 6,
+        "y": 6
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 6,
+        "y": 7
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 6,
+        "y": 8
+    },
+    {
+        "ID": 5,
+        "direction": 0,
+        "symbol": 45,
+        "x": 8,
+        "y": 8
+    },
+    {
+        "ID": 2,
+        "direction": 0,
+        "symbol": 87,
+        "x": 9,
+        "y": 8
+    }
+]
