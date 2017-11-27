@@ -35,6 +35,7 @@ Tile *World::GetTile(int x, int y)
 }
 void World::SetTile(int x, int y, Tile *newTile)
 {
+	std::cout << "SetTile called with x as " << x << " y as " << y << "\n";
 	newTile->world = this;
 	newTile->x = x;
 	newTile->y = y;
@@ -162,12 +163,42 @@ void World::Load(char *path)
 	//restofthefuckingcode
 	for (json::iterator iter = j.begin(); iter != j.end(); iter++)
 	{
-		Tile t = *iter;
+		json jTile = *iter;
+		//std::cout << jTile;
+		Tile *t = new Tile(jTile);
+		TileID id = static_cast<TileID>(t->ID);
+		int x = t->x;
+		int y = t->y;
+		std::cout << "ID: " << id << "x: " << x << "y: " << y << "\n";
+		switch (id)
+		{
+			case TILE_NULL: SetTile(x,y, new TileNull()); break;
+			case TILE_ROCK: SetTile(x,y, new TileRock()); break;
+			case TILE_WOOD: SetTile(x,y, new TileWood()); break;
+			case TILE_ASH: SetTile(x,y, new TileAsh()); break;
+			case TILE_CONVEYOR:
+			{
+				std::cout << "Setting conveyor\n";
+				TileConveyor *t = new TileConveyor(jTile);
+				SetTile(x,y, t);
+				break;
+			}
+			case TILE_LASER: SetTile(x,y, new TileLaser()); break;
+			case TILE_EARTH: SetTile(x,y, new TileEarth()); break;
+			case TILE_WATER: SetTile(x,y, new TileWater()); break;
+			default: SetTile(x,y, new TileNull()); break;
+		}
+		//Tile *t = new Tile(*iter);
 		//std::cout << "tID: " << t.ID << "\n";
-		Tile *p = Tile::FromID(t.ID);
-		std::memcpy(p, &t, sizeof(Tile));
+		//Tile *p = Tile::FromID(t->ID);
+		//std::memcpy(p, t, sizeof(Tile));
 		//std::cout << "pID: " << p->ID << "px: " << p->x << ", " << "py: " << p->y << "\n";
-		SetTile(p->x, p->y, p);
+		//SetTile(t->x, t->y, t);
+		// if (dynamic_cast<ActiveTile*>(t))
+		// {
+		// 	std::cout << "Found active tile" << "\n";
+		// 	ActiveTile::allActives.push_back((ActiveTile*)t);
+		// }
 		//std::cout << "ID at x,y: " << GetTile(p->x, p->y) << "\n";
 	}
 }

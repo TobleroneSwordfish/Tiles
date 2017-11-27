@@ -24,6 +24,7 @@ public:
 	~TileEffect();
 	Tile *parent;
 	char symbol;
+	virtual json ToJson();
 //protected:
 	int lifeTime = 0;
 };
@@ -34,6 +35,7 @@ class Tile
 public:
 	TileID ID;
 	Tile();
+	Tile(json j);
 	~Tile();
 	int x, y;
 	World *world;
@@ -42,17 +44,16 @@ public:
 	int burnTime; //how many turns it will burn for
 	int lastMoved = -1; //the last turn that this tile was moved by a conveyor
 	int humidity = 0; //how damp something is, being next to water increased this every turn
+	Direction facing = NORTH;
 	std::vector<TileEffect*> effects;
 	void AddEffect(TileEffect *effect);
 	void RemoveEffect(TileEffect *effect);
 	bool HasEffect(EffectID effect);
 	std::string Inspect();
-	json ToJson();
+	virtual json ToJson();
     static Tile *FromID(TileID id);
 //protected:
 	int effectsCount = 0;
-	json BaseToJson();
-	json BaseFromJson();
 };
 
 //tile with an update func, basically one that does something every turn
@@ -60,9 +61,13 @@ class ActiveTile : public Tile
 {
 public:
 	ActiveTile();
+	ActiveTile(json j);
 	~ActiveTile();
 	virtual void Update();
 	//a list of all the active tile, to save having to check each tile on the grid every turn
 	static std::vector<ActiveTile*> allActives;
 };
 
+void to_json(json &j, const Tile &t);
+void to_json(json &j, const TileEffect &e);
+void from_json(const json &j, Tile &t);

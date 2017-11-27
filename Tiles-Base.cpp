@@ -3,9 +3,55 @@
 #include <algorithm>
 #include <iostream>
 
+// void to_json(json &j, const Tile &t)
+// {
+//     j = json{{"ID", t.ID}, {"x", t.x}, {"y", t.y}, {"symbol", t.symbol}};
+// 	json array = json::array();
+// 	std::cout << "converting Tile to json\n";
+// 	for (std::vector<TileEffect*>::const_iterator pointer = t.effects.begin(); pointer != t.effects.end(); pointer ++)
+// 	{
+// 		TileEffect t = *(*pointer);
+// 		std::cout << "Effect ID: " << t.ID << "\n";
+// 		json effect = t;
+// 		array.push_back(effect);
+// 	}
+// 	if (!array.empty())
+// 	{
+// 		//json obj;
+// 		//obj = json{"effects", array};
+// 		j.push_back(json::object_t::value_type("effects", array));
+// 	}
+//     //j.push_back({"effects", t.effects});
+// }
+
+// void to_json(json &j, const TileEffect &e)
+// {
+//     j = json{{"ID", e.ID}, {"symbol", e.symbol}, {"lifetime", e.lifeTime}};
+// }
+
+// void from_json(const json &j, Tile &t)
+// {
+// 	TileID id = static_cast<TileID>(j.at("ID").get<int>());
+// 	//std::cout << "ID: " << id << "\n";
+// 	t = *Tile::FromID(id);
+// 	t.x = j.at("x").get<int>();
+// 	t.y = j.at("y").get<int>();
+// }
+
 Tile::Tile()
 {
 	effects = std::vector<TileEffect*>(0);
+}
+
+Tile::Tile(json j)
+{
+	TileID id = static_cast<TileID>(j.at("ID").get<int>());
+	//std::cout << "ID: " << id << "\n";
+	Tile t = *Tile::FromID(id);
+	t.x = j.at("x").get<int>();
+	t.y = j.at("y").get<int>();
+	t.facing = static_cast<Direction>(j.at("direction").get<int>());
+	std::memcpy(this, &t, sizeof(Tile));
 }
 
 //not exactly sure how to free all the tile effects, this code causes a segfault, hence it being commented out
@@ -65,44 +111,37 @@ std::string Tile::Inspect()
 	return output.str();
 }
 
-json Tile::BaseToJson()
+json Tile::ToJson()
 {
-	json j;
-	j = json{{"ID", ID}, {"x", x}, {"y", y}, {"symbol", symbol}};
-	// if (t.ID == TILE_CONVEYOR)
-	// {
-	// 	j.push_back(json::object::value_type("direction", ((TileConveyor)t).facing))
-	// }
+    json j;
+	j = json{{"ID", ID}, {"x", x}, {"y", y}, {"symbol", symbol}, {"direction", facing}};
 	json array = json::array();
 	std::cout << "converting Tile to json\n";
 	for (std::vector<TileEffect*>::const_iterator pointer = effects.begin(); pointer != effects.end(); pointer ++)
 	{
 		TileEffect t = *(*pointer);
 		std::cout << "Effect ID: " << t.ID << "\n";
-		json effect = t;
+		json effect = t.ToJson();
 		array.push_back(effect);
 	}
 	if (!array.empty())
 	{
+		//json obj;
+		//obj = json{"effects", array};
 		j.push_back(json::object_t::value_type("effects", array));
 	}
 	return j;
-}
-
-json Tile::BaseFromJson()
-{
-	json j;
-	TileID id = static_cast<TileID>(j.at("ID").get<int>());
-	//std::cout << "ID: " << id << "\n";
-	Tile t = *Tile::FromID(id);
-	t.x = j.at("x").get<int>();
-	t.y = j.at("y").get<int>();
 }
 
 std::vector<ActiveTile*> ActiveTile::allActives;
 ActiveTile::ActiveTile()
 {
 	
+}
+
+ActiveTile::ActiveTile(json j) : Tile(j)
+{
+
 }
 
 void ActiveTile::Update()
@@ -142,4 +181,9 @@ std::string TileEffect::Inspect()
 	output << "ID: " << ID << "\n";
 	output << "Symbol: " << symbol << "\n";
 	return output.str();
+}
+
+json TileEffect::ToJson()
+{
+	return json{{"ID", ID}, {"symbol", symbol}, {"lifetime", lifeTime}};
 }

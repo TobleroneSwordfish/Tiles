@@ -3,31 +3,6 @@
 #include <random>
 #include <iostream>
 
-void to_json(json &j, TileConveyor &tile)
-{
-	j = ((Tile)tile).BaseToJson();
-	std::cout << "to_json of conveyor called";
-	to_json(j, (Tile)tile);
-	j.push_back(json::object_t::value_type("direction", tile.facing));
-}
-
-void from_json(json &j, TileConveyor &tile)
-{
-	Direction dir = static_cast<Direction>(j.at("direction").get<int>());
-	tile = *(new TileConveyor(dir));
-}
-
-void to_json(json &j, const TileEffect &e)
-{
-    j = json{{"ID", e.ID}, {"symbol", e.symbol}, {"lifetime", e.lifeTime}};
-}
-
-json Tile::ToJson()
-{
-    json j = *this;
-    return j;
-}
-
 Tile *Tile::FromID(TileID id)
 {
 	switch (id)
@@ -82,6 +57,23 @@ TileConveyor::TileConveyor(Direction dir)
 		case EAST: symbol = '>'; break;
 		case WEST: symbol = '<'; break;
 	}
+}
+TileConveyor::TileConveyor(json j) : ActiveTile(j)
+{
+	Direction dir = static_cast<Direction>(j.at("direction").get<int>());
+	facing = dir;
+	switch(dir)
+	{
+		case NORTH: symbol = '^'; break;
+		case SOUTH: symbol = 'V'; break;
+		case EAST: symbol = '>'; break;
+		case WEST: symbol = '<'; break;
+	}
+}
+
+TileConveyor::~TileConveyor()
+{
+
 }
 
 void TileConveyor::Update()
