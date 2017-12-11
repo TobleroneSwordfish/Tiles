@@ -1,4 +1,5 @@
 #include "World.h"
+#include "Graphics.h"
 #include <iostream>
 #include <string>
 #include <cassert>
@@ -7,9 +8,13 @@
 void Play(World *world)
 {
 	world->Render();
+	Display *disp = new Display((char*)"Tiles++", 10, 10, 32);
+	disp->LoadTextures();
+	disp->Render(world);
 	bool exit = false;
 	while (!exit)
 	{
+		std::cout << "Fetching input" << std::endl;
 		char input;
 		std::cin >> input;
 		switch (input)
@@ -55,6 +60,7 @@ void Play(World *world)
 			{
 				world->Advance();
 				world->Render();
+				disp->Render(world);
 				break;
 			}
 			case 'q':
