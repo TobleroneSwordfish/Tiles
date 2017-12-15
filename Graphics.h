@@ -13,11 +13,15 @@ private:
     static void Fail();
     static void *NotNull(void *p);
     static int NotNeg(int n);
-    void DrawTexture(Texture *texture, int x, int y);
+    void DrawTexture(Texture *texture, int x, int y, Direction dir);
     Texture *FindTexture(int subID, int typeID);
 public:
     Display(char *title, int xSize, int ySize, int textureSize);
     ~Display();
     void LoadTextures();
+    void Render(World *world, int x, int y, int r);
     void Render(World *world);
+    char GetKey();
+    void MsgBox(const char *title, const char *msg);
+    void DrawString(const char *text, int x, int y);
 };

@@ -1,25 +1,19 @@
+//SDL is actually a C lib
 extern "C"
 {
     #include <SDL2/SDL.h>
     #include <SDL2/SDL_image.h>
+    #include <SDL2/SDL_ttf.h>
 }
 #include <string>
 #include <iostream>
 #include <vector>
+#include <random>
 #include "Graphics.h"
 #include "Tiles.h"
 #include "tinydir.h"
-//cross platform way of getting current directory - thanks to https://stackoverflow.com/questions/143174/how-do-i-get-the-directory-that-a-program-is-running-from
-// #include <stdio.h>  //defines FILENAME_MAX
-// #ifdef WINDOWS
-//     #include <direct.h>
-//     #define GetCurrentDir _getcwd
-// #else
-//     #include <unistd.h>
-//     #define GetCurrentDir getcwd
-//  #endif
 
-enum EntityType
+enum TextureType
 {
     TILE,
     TILE_EFFECT
@@ -40,7 +34,7 @@ public:
     SDL_Texture *SDLt;
     Texture(std::string path, SDL_Renderer *renderer)
     {
-        std::cout << "Loading texture at " << path << std::endl;
+        //std::cout << "Loading texture at " << path << std::endl;
         SDLt = IMG_LoadTexture(renderer, path.c_str());
         int i = path.length();
         while (path[i] != ')' && i >= 0)
@@ -53,7 +47,7 @@ public:
         }
         subID = path[i - 1] - '0';
         typeID = path[i - 3] - '0';
-        std::cout << "SubID: " << subID << " TypeID: " << typeID << std::endl;
+        //std::cout << "SubID: " << subID << " TypeID: " << typeID << std::endl;
     }
 };
 
@@ -68,6 +62,7 @@ Display::Display(char *title, int xSize, int ySize, int textureSize)
     int x = SDL_WINDOWPOS_UNDEFINED, y = SDL_WINDOWPOS_UNDEFINED;
     window = (SDL_Window *)NotNull(SDL_CreateWindow(title, x, y, width, height, 0));
     std::cout << "Window created" << std::endl;
+    srand(time(NULL));
     // SDL_Surface *surface = (SDL_Surface *)NotNull(SDL_GetWindowSurface(window));
     // std::cout << "Surface created" << std::endl;
     renderer = (SDL_Renderer *)NotNull(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED));
@@ -104,15 +99,52 @@ int Display::NotNeg(int n)
     return n;
 }
 //draws a texture on the renderer, but doesn't display it (0,0 at top left corner, fucking SDL)
-void Display::DrawTexture(Texture *texture, int x, int y)
+void Display::DrawTexture(Texture *texture, int x, int y, Direction dir)
 {
-    std::cout << "Drawing texture with SubID " << texture->subID << " at " << x << "," << y << std::endl;
+    //std::cout << "Drawing texture with SubID " << texture->subID << " at " << x << "," << y << std::endl;
     SDL_Rect rect;
     rect.x = x * textureSize;
     rect.y = y * textureSize;
     rect.w = textureSize;
     rect.h = textureSize;
-    SDL_RenderCopy(renderer, texture->SDLt, NULL, &rect);
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    if (texture->typeID == TILE && texture->subID == TILE_NULL)
+    {
+        dir = (Direction)(rand() % 4);
+    }
+    int angle;
+    switch(dir)
+    {
+        case NORTH:
+            angle = 0;
+            break;
+        case SOUTH:
+            angle = 180;
+            break;
+        case EAST:
+            angle = 90;
+            break;
+        case WEST:
+            angle = 270;
+            break;
+    }
+    SDL_RenderCopyEx(renderer, texture->SDLt, NULL, &rect, angle, NULL, flip);
+}
+void Display::DrawString(const char *text, int x, int y)
+{
+    NotNeg(TTF_Init());
+    TTF_Font* sans = (TTF_Font*)NotNull(TTF_OpenFont("Sans.ttf", 15));
+    SDL_Color color = {255, 255, 255};
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, text, color);
+    SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    SDL_Rect msgRect;
+    msgRect.x = x;
+    msgRect.y = y;
+    int w, h;
+    SDL_QueryTexture(message, nullptr, nullptr, &w, &h);
+    msgRect.w = w;
+    msgRect.h = h;
+    SDL_RenderCopy(renderer, message, NULL, &msgRect);
 }
 Texture *Display::FindTexture(int subID, int typeID)
 {
@@ -145,7 +177,7 @@ void Display::LoadTextures()
     while (dir.has_next)
     {
         tinydir_file file;
-        std::cout << "Reading file: " << file.name << std::endl;
+        //std::cout << "Reading file: " << file.name << std::endl;
         NotNeg(tinydir_readfile(&dir, &file));
         if (!file.is_dir)
         {
@@ -167,37 +199,61 @@ void Display::LoadTextures()
         NotNeg(tinydir_next(&dir));
     }
 }
-void Display::Render(World *world)
+void Display::Render(World *world, int centerX, int centerY, int r)
 {
     SDL_RenderClear(renderer);
-    for (int y = world->yLimit; y >= 0; y--)
+    for (int y = centerY + r; y >= centerY - r; y--)
     {
-        for (int x = world->xLimit; x >= 0; x--)
+        DrawString(std::to_string(y).c_str(), 0, (((r * 2)) - (y - (centerY - r))) * textureSize);
+    }
+    for (int x = centerX + r; x >= centerX - r; x--)
+    {
+        DrawString(std::to_string(x).c_str(), (x + 1 - (centerX - r)) * textureSize, ((r * 2) + 1) * textureSize);
+    }
+    for (int y = centerY + r; y >= centerY - r; y--)
+    {
+        for (int x = centerX + r; x >= centerX - r; x--)
         {
+            //we shift x along by one to allow for the coordinate 
+            int displayX = x - (centerX - r) + 1;
+            //y is inverted due to display conventions, so we subtract that from the max height
+            int displayY = r * 2 - (y - (centerY - r));
             Tile *tile = world->GetTile(x, y);
             int ID = tile->ID;
             Texture *texture = (Texture *)NotNull(FindTexture(ID, TILE));
-            std::cout << "Found texture with SubID " << texture->subID << std::endl;
-            DrawTexture(texture, x, world->yLimit - y);
+            DrawTexture(texture, displayX, displayY, tile->facing);
             if (tile->effectsCount > 0)
             {
                 for (auto i = tile->effects.begin(); i != tile->effects.end(); i++)
                 {
                     TileEffect *effect = *i;
                     Texture *effectTexture = (Texture *)NotNull(FindTexture(effect->ID, TILE_EFFECT));
-
+                    DrawTexture(effectTexture, displayX, displayY, NORTH);
                 }
             }
         }
     }
+    //DrawString((char*)"Test", 0, 0);
     SDL_RenderPresent(renderer);
 }
-
-
-// void Render(World *world)
-// {
-//     Display disp = new Display();
-//     disp.Load()
-//     SDL_Texture img = IMG_LoadTexture(disp.renderer, "C:\cygwin64\home\Idiot end user\Tiles\Textures\cheese.png");
-//     SDL_QueryTexture(img, )
-// }
+void Display::Render(World *world)
+{
+    Render(world, world->xLimit / 2, world->xLimit / 2, (world->xLimit > world->yLimit ? world->xLimit : world->yLimit) / 2);
+}
+//waits for a keypress then returns it
+char Display::GetKey()
+{
+    SDL_Event event;
+    while (true)
+    {
+        SDL_WaitEvent(&event);
+        if (event.type == SDL_KEYDOWN)
+        {
+            return event.key.keysym.sym;
+        }
+    }
+}
+void Display::MsgBox(const char *title, const char *msg)
+{
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, title, msg, window);
+}

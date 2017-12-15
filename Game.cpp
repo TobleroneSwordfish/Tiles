@@ -7,16 +7,20 @@
 
 void Play(World *world)
 {
-	world->Render();
-	Display *disp = new Display((char*)"Tiles++", 10, 10, 32);
+	//world->Render();
+	Display *disp = new Display((char*)"Tiles++", world->xLimit + 2, world->yLimit + 2, 32);
 	disp->LoadTextures();
-	disp->Render(world);
+	world->Render();
+	int centerX = 5; //world->xLimit/2;
+	int centerY = 5; //world->yLimit/2;
+	int radius = 5; //world->xLimit/2;
+	disp->Render(world, centerX, centerY, radius);
 	bool exit = false;
 	while (!exit)
 	{
 		std::cout << "Fetching input" << std::endl;
-		char input;
-		std::cin >> input;
+		char input = disp->GetKey();
+		//std::cout << "Key read in: " << input;
 		switch (input)
 		{
 			case 'i':
@@ -24,16 +28,18 @@ void Play(World *world)
 				int x = -1;
 				while (x < 0 || x > (world->xLimit))
 				{
-					std::cout << "x coord: ";
-					std::cin >> x;
+					//std::cout << "x coord: ";
+					x = disp->GetKey();
+					x -= '0';
 				}
 				int y = -1;
 				while (y < 0 || y > (world->yLimit))
 				{
-					std::cout << "\ny coord: ";
-					std::cin >> y;
+					//std::cout << "\ny coord: ";
+					y = disp->GetKey();
+					y -= '0';
 				}
-				std::cout << "\n" << world->InspectTile(x, y).c_str();
+				disp->MsgBox((char *)"Inspect", world->InspectTile(x, y).c_str());
 				break;
 			}
 			case 's':
@@ -53,14 +59,15 @@ void Play(World *world)
 				std::cin >> path;
 				path.append(".json");			
 				world->Load(path.c_str());
-				world->Render();
+				//world->Render();
+				disp->Render(world, centerX, centerY, radius);
 				break;
 			}
 			case 'a':
 			{
 				world->Advance();
-				world->Render();
-				disp->Render(world);
+				//world->Render();
+				disp->Render(world, centerX, centerY, radius);
 				break;
 			}
 			case 'q':
