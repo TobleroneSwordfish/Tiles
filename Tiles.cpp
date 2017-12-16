@@ -108,33 +108,11 @@ TileLaser::TileLaser()
 
 void TileLaser::Update()
 {
-	//look for flammable tile to set on fire
-	for (int i = x; i <= world->xLimit; i++)
+	Tile *nextTile = world->GetNextTile(x, y, facing);
+	if (nextTile != nullptr && !nextTile->HasEffect(EFFECT_BEAM) && nextTile->ID == TILE_NULL)
 	{
-		Tile *currentTile = world->GetTile(i, y);
-		if (currentTile->flammable)
-		{
-			if (!currentTile->HasEffect(EFFECT_FIRE))
-			{
-				currentTile->AddEffect(new EffectFire);	
-				std::cout << "Laser at " << x << "," << y << " set fire to tile at " << currentTile->x << "," << currentTile->y << std::endl;
-			}
-			break;
-		}
-	}
-	//copy pasted code here, ik but it's nearly midnight and I'll deal with it later
-	for (int i = x; i >= 0; i--)
-	{
-		Tile *currentTile = world->GetTile(i, y);
-		if (currentTile->flammable)
-		{
-			if (!currentTile->HasEffect(EFFECT_FIRE))
-			{
-				currentTile->AddEffect(new EffectFire);	
-				std::cout << "Laser at " << x << "," << y << " set fire to tile at " << currentTile->x << "," << currentTile->y << std::endl;
-			}
-			break;
-		}
+		EffectBeam *newBeam = new EffectBeam(facing);
+		nextTile->AddEffect(newBeam);
 	}
 }
 
@@ -212,7 +190,6 @@ void EffectFire::Update()
 	{
 		Spread();
 	}
-	//Spread();
 	//check if the fire has burned out
 	if (lifeTime > parent->burnTime)
 	{
@@ -220,5 +197,45 @@ void EffectFire::Update()
 		world->SetTile(parent->x, parent->y, new TileAsh());
 		std::cout << "Tile at " << parent->x << "," << parent->y << " burned down to ash" << std::endl;
 		delete parent;
+	}
+}
+
+EffectBeam::EffectBeam(Direction dir)
+{
+	ID = EFFECT_BEAM;
+	this->facing = dir;
+}
+
+EffectBeam::~EffectBeam()
+{
+
+}
+
+void EffectBeam::Update()
+{
+	World *world = parent->world;
+	//check that the beam is still connected to a source
+	Tile *currentTile = world->GetLastTile(parent->x, parent->y, facing);
+	while (currentTile != nullptr && currentTile->HasEffect(this->ID))
+	{
+		currentTile = world->GetLastTile(currentTile->x, currentTile->y, currentTile->facing);
+	}
+	if (currentTile == nullptr || currentTile->ID != TILE_LASER)
+	{
+		Trash();
+		return;
+		std::cout << "if this code executes the world no longer makes sense.\nIf you're seeing this, run, get out while you still can." << std::endl;
+	}
+	//propagate to the next tile
+	Tile *nextTile = world->GetNextTile(parent->x, parent->y, facing);
+	if (nextTile != nullptr && !nextTile->HasEffect(this->ID) && nextTile->ID == TILE_NULL)
+	{
+		EffectBeam *newBeam = new EffectBeam(facing);
+		nextTile->AddEffect(newBeam);
+	}
+	if (nextTile->flammable && !nextTile->HasEffect(EFFECT_FIRE))
+	{
+		EffectFire *flame = new EffectFire();
+		nextTile->AddEffect(flame);	
 	}
 }

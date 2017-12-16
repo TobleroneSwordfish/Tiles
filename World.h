@@ -9,6 +9,8 @@ public:
 	~World();
 	int turn = 0;
 	Tile *GetTile(int x, int y);
+	Tile *GetNextTile(int x, int y, Direction dir);
+	Tile *GetLastTile(int x, int y, Direction dir);
 	void SetTile(int x, int y, Tile *newTile);
 	void SetTile(int x, int y, ActiveTile *newActive);
 	std::string InspectTile(int x, int y);
@@ -19,4 +21,5 @@ public:
 	void Load(const char *path); //load in same way
 private:
 	Tile *grid[xLimit + 1][yLimit + 1];
+	void ResetCoords();
 };

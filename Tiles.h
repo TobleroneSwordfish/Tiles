@@ -75,3 +75,13 @@ private:
 	void Spread(); //watch the world burn
 	int lastSpread = -1; //last time this fire spread or was spread
 };
+
+class EffectBeam : public TileEffect
+{
+public:
+	EffectBeam(Direction dir);
+	~EffectBeam();
+	void Update();
+private:
+	Direction facing;
+};

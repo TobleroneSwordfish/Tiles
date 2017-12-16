@@ -56,13 +56,6 @@
         "y": 2
     },
     {
-        "ID": 1,
-        "direction": 0,
-        "symbol": 82,
-        "x": 4,
-        "y": 3
-    },
-    {
         "ID": 2,
         "direction": 0,
         "symbol": 87,
@@ -129,8 +122,8 @@
         "ID": 5,
         "direction": 0,
         "symbol": 45,
-        "x": 8,
-        "y": 8
+        "x": 4,
+        "y": 1
     },
     {
         "ID": 2,

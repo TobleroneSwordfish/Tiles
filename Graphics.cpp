@@ -183,7 +183,7 @@ void Display::LoadTextures()
         {
             std::string path = baseDir + "Textures/" + std::string(file.name);
             Texture *nextTexture = new Texture(path, renderer);
-            if (textureSize = -1)
+            if (textureSize == -1)
             {
                 int w, h;
                 SDL_QueryTexture(nextTexture->SDLt, nullptr, nullptr, &w, &h);

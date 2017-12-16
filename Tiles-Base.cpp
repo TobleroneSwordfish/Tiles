@@ -125,13 +125,15 @@ ActiveTile::~ActiveTile()
 	}
 }
 
+std::vector<TileEffect*> TileEffect::garbage;
 TileEffect::TileEffect()
 {
 
 }
 TileEffect::~TileEffect()
 {
-
+	std::cout << "Tile effect destructor called" << std::endl;
+	parent->RemoveEffect(this);
 }
 void TileEffect::Update()
 {
@@ -149,4 +151,18 @@ std::string TileEffect::Inspect()
 json TileEffect::ToJson()
 {
 	return json{{"ID", ID}, {"symbol", symbol}, {"lifetime", lifeTime}};
+}
+
+void TileEffect::Trash()
+{
+	garbage.push_back(this);
+}
+
+void TileEffect::Collect()
+{
+	for (auto i = garbage.begin(); i != garbage.end(); i++)
+	{
+		delete *i;
+	}
+	garbage.clear();
 }

@@ -1,12 +1,11 @@
 #pragma once
-//#include "World.h"
 #include <string>
 #include "vector"
 #include "json.hpp"
 
 using json = nlohmann::json;
 enum TileID {TILE_NULL, TILE_ROCK, TILE_WOOD, TILE_ASH, TILE_CONVEYOR, TILE_LASER, TILE_EARTH, TILE_WATER};
-enum EffectID {EFFECT_FIRE, EFFECT_PLANT};
+enum EffectID {EFFECT_FIRE, EFFECT_PLANT, EFFECT_BEAM};
 enum Direction {NORTH, SOUTH, EAST, WEST};
 //--BASE CLASSES--
 
@@ -25,8 +24,13 @@ public:
 	Tile *parent;
 	char symbol;
 	virtual json ToJson();
-//protected:
+	//add to a queue to be deleted at the end of the turn, solves a few issues with reallocation
+	void Trash();
+	static void Collect();
 	int lifeTime = 0;
+protected:
+	//the list of effects to be deleted at the end of the turn
+	static std::vector<TileEffect*> garbage;
 };
 
 //base class for all tiles

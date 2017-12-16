@@ -13,6 +13,8 @@ World::World()
 		for (int y = 0; y <= yLimit; y++)
 		{
 			Tile *newTile = new TileNull();
+			newTile->x = x;
+			newTile->y = y;
 			grid[x][y] = newTile;
 			newTile->world = this;
 		}
@@ -31,7 +33,52 @@ World::~World()
 }
 Tile *World::GetTile(int x, int y)
 {
-	return grid[x][y];
+	//std::cout << "GetTile called at " << x << "," << y << std::endl;
+	if (x <= xLimit && x >= 0 && y <= yLimit && y >= 0)
+	{
+		return grid[x][y];
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+Tile *World::GetNextTile(int x, int y, Direction dir)
+{
+	//std::cout << "GetNextTile called at " << x << "," << y << std::endl;
+	switch (dir)
+	{
+		case NORTH:
+			return GetTile(x, y + 1);
+			break;
+		case SOUTH:
+			return GetTile(x, y - 1);
+			break;
+		case EAST:
+			return GetTile(x + 1, y);
+			break;
+		case WEST:
+			return GetTile(x - 1, y);
+			break;
+	}
+}
+Tile *World::GetLastTile(int x, int y, Direction dir)
+{
+	switch (dir)
+	{
+		case NORTH:
+			return GetTile(x, y - 1);
+			break;
+		case SOUTH:
+			return GetTile(x, y + 1);
+			break;
+		case EAST:
+			return GetTile(x - 1, y);
+			break;
+		case WEST:
+			return GetTile(x + 1, y);
+			break;
+	}
 }
 void World::SetTile(int x, int y, Tile *newTile)
 {
@@ -101,8 +148,22 @@ void World::Render()
 	}
 	std::cout << std::endl;
 }
+//I hate this hack, buuuut it allows me to be really lazy with the rest of it
+void World::ResetCoords()
+{
+	for (int x = 0; x <= xLimit; x ++)
+	{
+		for (int y = 0; y <= yLimit; y++)
+		{
+			Tile *currentTile = GetTile(x, y);
+			currentTile->x = x;
+			currentTile->y = y;
+		}
+	}
+}
 void World::Advance()
 {
+	ResetCoords();
 	for (int i = 0; i < ActiveTile::allActives.size(); i++)
 	{
 		ActiveTile::allActives[i]->Update();
@@ -118,6 +179,8 @@ void World::Advance()
 			}
 		}
 	}
+	ResetCoords();
+	TileEffect::Collect();
 	//this turn is complete, increment turn number
 	turn++;
 }
