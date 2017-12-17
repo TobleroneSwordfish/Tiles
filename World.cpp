@@ -31,9 +31,9 @@ World::~World()
 		}
 	}
 }
+//limit safe getter for the underlying grid
 Tile *World::GetTile(int x, int y)
 {
-	//std::cout << "GetTile called at " << x << "," << y << std::endl;
 	if (x <= xLimit && x >= 0 && y <= yLimit && y >= 0)
 	{
 		return grid[x][y];
@@ -43,6 +43,7 @@ Tile *World::GetTile(int x, int y)
 		return nullptr;
 	}
 }
+//return a pointer to the next tile from x,y in direction dir
 Tile *World::GetNextTile(int x, int y, Direction dir)
 {
 	//std::cout << "GetNextTile called at " << x << "," << y << std::endl;
@@ -62,6 +63,7 @@ Tile *World::GetNextTile(int x, int y, Direction dir)
 			break;
 	}
 }
+//return a pointer to the last tile back from x,y opposite to dir
 Tile *World::GetLastTile(int x, int y, Direction dir)
 {
 	switch (dir)
@@ -80,6 +82,7 @@ Tile *World::GetLastTile(int x, int y, Direction dir)
 			break;
 	}
 }
+//stick a tile in the grid, setting up the admittedly terrible circular dependant properties
 void World::SetTile(int x, int y, Tile *newTile)
 {
 	newTile->world = this;
@@ -92,8 +95,8 @@ void World::SetTile(int x, int y, ActiveTile *newActive)
 	SetTile(x,y, (Tile*)newActive);
 	ActiveTile::allActives.push_back(newActive);
 }
-//draw the world to the console, would love to get actual graphics going later (OpenGL?)
-//am aware this is a bit of a mess, but don't have time to fix it rn
+//draw the world to the console
+//left this here after implementing the SDL version as a fallback for non-X11 systems
 void World::Render()
 {
 	for (int y = yLimit; y >= 0; y--)
@@ -164,10 +167,12 @@ void World::ResetCoords()
 void World::Advance()
 {
 	ResetCoords();
+	//update all active tiles, the list saves the polymorphic headache of checking if each tile is active
 	for (int i = 0; i < ActiveTile::allActives.size(); i++)
 	{
 		ActiveTile::allActives[i]->Update();
 	}
+	//update tile effects on each and every tile
 	for (int x = 0; x < xLimit; x++)
 	{
 		for (int y = 0; y < yLimit; y++)
@@ -184,10 +189,12 @@ void World::Advance()
 	//this turn is complete, increment turn number
 	turn++;
 }
+//call the recursive inspect function to get a string representation of the tile and all effects
 std::string World::InspectTile(int x, int y)
 {
 	return GetTile(x, y)->Inspect();
 }
+//save a json representation of the world to file
 void World::Save(const char *path)
 {
 	json output;
@@ -206,7 +213,8 @@ void World::Save(const char *path)
 	std::ofstream stream(path);
 	stream << std::setw(4) << output << std::endl;
 }
-
+//construct a world from a json file, probably should be a constructor really,
+//but c++ has no constructor chaining
 void World::Load(const char *path)
 {
 	for (int x = 0; x <= xLimit; x++)
@@ -220,6 +228,11 @@ void World::Load(const char *path)
 	}
 	ActiveTile::allActives.clear();
 	std::ifstream stream(path);
+	if (!stream)
+	{
+		std::cout << "File " << path << " not found or inaccessible" << std::endl;
+		return;
+	}
 	json j;
 	stream >> j;
 	//restofthefuckingcode

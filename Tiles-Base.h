@@ -26,6 +26,7 @@ public:
 	virtual json ToJson();
 	//add to a queue to be deleted at the end of the turn, solves a few issues with reallocation
 	void Trash();
+	//delete all items scheduled for destruction
 	static void Collect();
 	int lifeTime = 0;
 protected:

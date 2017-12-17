@@ -132,7 +132,6 @@ TileEffect::TileEffect()
 }
 TileEffect::~TileEffect()
 {
-	std::cout << "Tile effect destructor called" << std::endl;
 	parent->RemoveEffect(this);
 }
 void TileEffect::Update()

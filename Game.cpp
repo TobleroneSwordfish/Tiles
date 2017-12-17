@@ -1,5 +1,6 @@
 #include "World.h"
 #include "Graphics.h"
+#include "Input.h"
 #include <iostream>
 #include <string>
 #include <cassert>
@@ -19,7 +20,7 @@ void Play(World *world)
 	while (!exit)
 	{
 		std::cout << "Fetching input" << std::endl;
-		char input = disp->GetKey();
+		char input = Input::GetKey();
 		//std::cout << "Key read in: " << input;
 		switch (input)
 		{
@@ -29,14 +30,14 @@ void Play(World *world)
 				while (x < 0 || x > (world->xLimit))
 				{
 					//std::cout << "x coord: ";
-					x = disp->GetKey();
+					x = Input::GetKey();
 					x -= '0';
 				}
 				int y = -1;
 				while (y < 0 || y > (world->yLimit))
 				{
 					//std::cout << "\ny coord: ";
-					y = disp->GetKey();
+					y = Input::GetKey();
 					y -= '0';
 				}
 				disp->MsgBox((char *)"Inspect", world->InspectTile(x, y).c_str());
@@ -45,18 +46,14 @@ void Play(World *world)
 			case 's':
 			{
 				//this filename input isn't safe at all, #willfixitlater
-				std::cout << "Enter filename";
-				std::string path;
-				std::cin >> path;
+				std::string path = Input::GetString("Enter filename");
 				path.append(".json");
 				world->Save(path.c_str());
 				break;
 			}
 			case 'l':
 			{
-				std::cout << "Enter filename";
-				std::string path;
-				std::cin >> path;
+				std::string path = Input::GetString("Enter filename");
 				path.append(".json");			
 				world->Load(path.c_str());
 				//world->Render();

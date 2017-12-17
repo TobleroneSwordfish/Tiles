@@ -145,6 +145,10 @@ void Display::DrawString(const char *text, int x, int y)
     msgRect.w = w;
     msgRect.h = h;
     SDL_RenderCopy(renderer, message, NULL, &msgRect);
+    SDL_FreeSurface(surfaceMessage);
+    SDL_DestroyTexture(message);
+    TTF_CloseFont(sans);
+    TTF_Quit();
 }
 Texture *Display::FindTexture(int subID, int typeID)
 {
@@ -239,19 +243,6 @@ void Display::Render(World *world, int centerX, int centerY, int r)
 void Display::Render(World *world)
 {
     Render(world, world->xLimit / 2, world->xLimit / 2, (world->xLimit > world->yLimit ? world->xLimit : world->yLimit) / 2);
-}
-//waits for a keypress then returns it
-char Display::GetKey()
-{
-    SDL_Event event;
-    while (true)
-    {
-        SDL_WaitEvent(&event);
-        if (event.type == SDL_KEYDOWN)
-        {
-            return event.key.keysym.sym;
-        }
-    }
 }
 void Display::MsgBox(const char *title, const char *msg)
 {
